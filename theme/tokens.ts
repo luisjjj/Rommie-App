@@ -4,6 +4,9 @@ export const colors = {
   forest: '#1B4332',       // primary brand / important actions
   forestDeep: '#143626',
   forestSoft: '#E6EFE8',
+  lime: '#C8F04B',          // accent of the moment: match badges, CTAs, highlights
+  limeSoft: '#EDF9CF',
+  tangerine: '#F2762E',     // playful color-block shapes
   cream: '#FAF6EE',         // primary light background
   creamDark: '#F1E9D7',
   charcoal: '#22271F',      // main text
@@ -39,14 +42,29 @@ export const radii = {
   full: 999,
 } as const;
 
+// Typefaces — loaded once in app/_layout.tsx via expo-font.
+// display = chunky expressive grotesque for hero moments; sans = UI text.
+export const fonts = {
+  display: 'BricolageGrotesque_800ExtraBold',
+  sans: 'Manrope_400Regular',
+  sansMedium: 'Manrope_500Medium',
+  sansSemi: 'Manrope_600SemiBold',
+  sansExtra: 'Manrope_800ExtraBold',
+} as const;
+
 export const typography = {
-  display: { fontSize: 30, lineHeight: 36, fontWeight: '800' as const },
-  h1: { fontSize: 24, lineHeight: 30, fontWeight: '800' as const },
-  h2: { fontSize: 20, lineHeight: 26, fontWeight: '700' as const },
-  h3: { fontSize: 17, lineHeight: 22, fontWeight: '700' as const },
-  body: { fontSize: 16, lineHeight: 24, fontWeight: '400' as const },
-  bodySmall: { fontSize: 14, lineHeight: 20, fontWeight: '400' as const },
-  caption: { fontSize: 12, lineHeight: 16, fontWeight: '500' as const },
+  // Hero moments: landing, screen titles, big stats. Tight, chunky, loud.
+  hero: { fontFamily: fonts.display, fontSize: 56, lineHeight: 54, letterSpacing: -1, color: colors.charcoal },
+  heroSmall: { fontFamily: fonts.display, fontSize: 40, lineHeight: 38, letterSpacing: -0.5, color: colors.charcoal },
+  display: { fontFamily: fonts.display, fontSize: 32, lineHeight: 34, letterSpacing: -0.5, color: colors.charcoal },
+  h1: { fontFamily: fonts.display, fontSize: 30, lineHeight: 33, letterSpacing: -0.3, color: colors.charcoal },
+  h2: { fontFamily: fonts.sansExtra, fontSize: 20, lineHeight: 26, color: colors.charcoal },
+  h3: { fontFamily: fonts.sansSemi, fontSize: 17, lineHeight: 22, color: colors.charcoal },
+  stat: { fontFamily: fonts.display, fontSize: 24, lineHeight: 26, color: colors.charcoal },
+  body: { fontFamily: fonts.sans, fontSize: 16, lineHeight: 24, color: colors.gray },
+  bodySmall: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 20, color: colors.gray },
+  chip: { fontFamily: fonts.sansSemi, fontSize: 14, lineHeight: 18 },
+  caption: { fontFamily: fonts.sansMedium, fontSize: 12, lineHeight: 16, color: colors.gray },
 } as const;
 
 export const shadows = {

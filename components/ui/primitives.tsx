@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import { colors, radii, spacing, typography } from '@/theme/tokens';
+import { colors, fonts, radii, spacing, typography } from '@/theme/tokens';
 
 export function Chip({ label, selected, onPress }: { label: string; selected?: boolean; onPress?: () => void }) {
   return (
@@ -15,10 +15,10 @@ export function Chip({ label, selected, onPress }: { label: string; selected?: b
   );
 }
 
-export function LifestyleChip({ label }: { label: string }) {
+export function LifestyleChip({ label, dark }: { label: string; dark?: boolean }) {
   return (
-    <View style={styles.tag}>
-      <Text style={styles.tagText}>{label}</Text>
+    <View style={[styles.tag, dark && styles.tagDark]}>
+      <Text style={[styles.tagText, dark && styles.tagTextDark]}>{label}</Text>
     </View>
   );
 }
@@ -71,18 +71,27 @@ const styles = StyleSheet.create({
   base: {
     borderRadius: radii.full,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    paddingVertical: 10,
     backgroundColor: colors.white,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: colors.grayLight,
     marginRight: spacing.sm,
     marginBottom: spacing.sm,
   },
   selected: { backgroundColor: colors.forest, borderColor: colors.forest },
-  text: { ...typography.bodySmall, color: colors.charcoal },
-  textSelected: { color: colors.white, fontWeight: '700' },
-  tag: { backgroundColor: colors.grayMuted, borderRadius: radii.full, paddingHorizontal: 10, paddingVertical: 6, marginRight: 6, marginBottom: 6 },
-  tagText: { ...typography.caption, color: colors.charcoal },
+  text: { ...typography.chip, color: colors.charcoal },
+  textSelected: { color: colors.lime },
+  tag: {
+    backgroundColor: colors.grayMuted,
+    borderRadius: radii.full,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 6,
+    marginBottom: 6,
+  },
+  tagDark: { backgroundColor: 'rgba(255,255,255,0.16)' },
+  tagText: { ...typography.caption, color: colors.charcoal, fontFamily: fonts.sansSemi },
+  tagTextDark: { color: colors.white },
   avatar: { alignItems: 'center', justifyContent: 'center' },
   avatarText: { fontWeight: '800', color: colors.forest },
   empty: { alignItems: 'center', padding: spacing.xxl },

@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   step: { ...typography.caption, color: colors.gray },
   h1: { ...typography.h1, color: colors.charcoal, marginTop: 4 },
   card: { backgroundColor: colors.white, borderRadius: radii.xl, padding: spacing.xl, borderWidth: 2, borderColor: 'transparent' },
-  cardOn: { borderColor: colors.forest },
+  cardOn: { borderColor: colors.forest, backgroundColor: colors.forestSoft },
   cardTitle: { ...typography.h2, color: colors.charcoal },
   cardBody: { ...typography.bodySmall, color: colors.gray, marginTop: 4 },
 });

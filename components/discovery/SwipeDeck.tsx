@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   interpolate,
@@ -9,9 +10,10 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { Heart, X } from 'phosphor-react-native';
+import { Heart, MapPin, X } from 'phosphor-react-native';
 import { Avatar, EmptyState, LifestyleChip } from '../ui/primitives';
-import { colors, radii, shadows, spacing, typography } from '@/theme/tokens';
+import { StickerBadge } from '../ui/brand';
+import { colors, fonts, radii, shadows, spacing, typography } from '@/theme/tokens';
 import { formatBudget, lifestyleEntries } from '@/utils/format';
 import type { Profile } from '@/types';
 
@@ -19,18 +21,17 @@ const SWIPE_THRESHOLD = 120;
 const OFFSCREEN_X = 550;
 
 function SwipeCard({ profile, onPress }: { profile: Profile; onPress: (p: Profile) => void }) {
-  const place = [profile.university ?? profile.city, profile.preferredArea].filter(Boolean).join(' • ');
-  const placeKey = [profile.university ?? profile.city, profile.preferredArea].filter(Boolean) as string[];
+  const place = [profile.university ?? profile.city, profile.preferredArea].filter(Boolean).join(' · ');
   const tags = [
     formatBudget(profile.budgetMin, profile.budgetMax),
     profile.moveInTiming,
     ...lifestyleEntries(profile.lifestyle).map(([, v]) => v),
   ]
-    .filter((t): t is string => !!t && !placeKey.includes(t))
-    .slice(0, 6);
+    .filter((t): t is string => !!t)
+    .slice(0, 5);
 
   return (
-    <View style={styles.card}>
+    <Pressable onPress={() => onPress(profile)} style={styles.card}>
       {profile.photoUrl ? (
         <Image source={{ uri: profile.photoUrl }} style={styles.photo} />
       ) : (
@@ -38,23 +39,41 @@ function SwipeCard({ profile, onPress }: { profile: Profile; onPress: (p: Profil
           <Avatar name={profile.displayName} size={88} />
         </View>
       )}
-      <Pressable onPress={() => onPress(profile)} style={styles.body}>
+
+      {/* bottom scrim for legibility */}
+      <LinearGradient
+        colors={['transparent', 'rgba(15,26,20,0.45)', 'rgba(15,26,20,0.95)']}
+        locations={[0.35, 0.62, 1]}
+        style={styles.scrim}
+        pointerEvents="none"
+      />
+
+      {/* content rides on the photo */}
+      <View style={styles.overlay} pointerEvents="none">
+        <View style={styles.stickerWrap}>
+          <StickerBadge value={formatBudget(profile.budgetMin, profile.budgetMax)} label="Budget" rotate={-5} />
+        </View>
         <Text style={styles.name}>
           {profile.displayName}, {profile.age}
         </Text>
-        {place ? <Text style={styles.sub}>{place}</Text> : null}
+        {place ? (
+          <View style={styles.placeRow}>
+            <MapPin size={14} weight="fill" color={colors.lime} />
+            <Text style={styles.place}>{place}</Text>
+          </View>
+        ) : null}
         {profile.bio ? (
-          <Text style={styles.bio} numberOfLines={3}>
-            {profile.bio}
+          <Text style={styles.bio} numberOfLines={2}>
+            “{profile.bio}”
           </Text>
         ) : null}
         <View style={styles.tags}>
           {tags.map((t) => (
-            <LifestyleChip key={t} label={t} />
+            <LifestyleChip key={t} label={t} dark />
           ))}
         </View>
-      </Pressable>
-    </View>
+      </View>
+    </Pressable>
   );
 }
 
@@ -210,7 +229,7 @@ export function SwipeDeck({ profiles, resetKey, onLike, onPass, onViewProfile, o
           accessibilityLabel="Like"
           style={({ pressed }) => [styles.likeBtn, pressed && { opacity: 0.7 }]}
         >
-          <Heart size={30} color={colors.white} weight="fill" />
+          <Heart size={30} color={colors.forestDeep} weight="fill" />
         </Pressable>
       </View>
       <Text style={styles.hint}>Swipe right to like, left to pass — or tap a card for the full profile.</Text>
@@ -224,13 +243,23 @@ const styles = StyleSheet.create({
   fill: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
   topCard: { zIndex: 3 },
   underCard: { zIndex: 1, opacity: 0.9 },
-  card: { flex: 1, backgroundColor: colors.white, borderRadius: radii.xl, overflow: 'hidden', ...shadows.card },
-  photo: { flex: 1.1, backgroundColor: colors.grayMuted },
-  photoFallback: { alignItems: 'center', justifyContent: 'center' },
-  body: { flex: 1, padding: spacing.xl },
-  name: { ...typography.h1, color: colors.charcoal },
-  sub: { ...typography.bodySmall, color: colors.gray, marginTop: 2 },
-  bio: { ...typography.bodySmall, color: colors.charcoal, marginTop: spacing.sm },
+  card: { flex: 1, backgroundColor: colors.forestDeep, borderRadius: radii.xl, overflow: 'hidden', ...shadows.card },
+  photo: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: colors.grayMuted } as const,
+  photoFallback: { backgroundColor: colors.grayMuted, alignItems: 'center', justifyContent: 'center' },
+  scrim: StyleSheet.absoluteFill,
+  overlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: spacing.xl,
+    paddingTop: 48,
+  },
+  stickerWrap: { alignSelf: 'flex-start', marginBottom: spacing.md },
+  name: { fontFamily: fonts.display, fontSize: 40, lineHeight: 42, color: colors.white },
+  placeRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: spacing.xs },
+  place: { ...typography.chip, color: 'rgba(255,255,255,0.9)' },
+  bio: { ...typography.bodySmall, color: 'rgba(255,255,255,0.85)', marginTop: spacing.sm, fontSize: 15 },
   tags: { flexDirection: 'row', flexWrap: 'wrap', marginTop: spacing.md },
   stamp: {
     position: 'absolute',
@@ -258,7 +287,7 @@ const styles = StyleSheet.create({
     width: 68,
     height: 68,
     borderRadius: 34,
-    backgroundColor: colors.forest,
+    backgroundColor: colors.lime,
     alignItems: 'center',
     justifyContent: 'center',
     ...shadows.card,

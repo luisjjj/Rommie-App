@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { colors, radii, spacing, typography } from '@/theme/tokens';
+import { colors, fonts, radii, spacing, typography } from '@/theme/tokens';
 
 interface Props {
   title: string;
@@ -52,8 +52,8 @@ export function Button({ title, onPress, variant = 'primary', disabled, loading,
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 52,
-    borderRadius: radii.lg,
+    minHeight: 56,
+    borderRadius: radii.full,
     paddingHorizontal: spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
@@ -63,5 +63,5 @@ const styles = StyleSheet.create({
   ghost: { backgroundColor: 'transparent' },
   danger: { backgroundColor: colors.danger },
   disabled: { opacity: 0.5 },
-  label: { ...typography.h3, color: colors.forest },
+  label: { ...typography.chip, fontFamily: fonts.sansExtra, color: colors.forest, fontSize: 17 },
 });
